@@ -1,0 +1,1 @@
+A project to create an online calculator to exercise my skills in JavaScripts, CSS and HTML.
