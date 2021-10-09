@@ -26,6 +26,19 @@ calcButtons.forEach((calcButton) => {
             isPressed = false;
             calcDone = false;
         }
+        else if (calcButton.textContent === "%") {
+            if (calcDone === false) {
+                screenDisplay.textContent = screenDisplay.textContent / 100;
+            }
+            else {
+                savedNum2 = screenDisplay.textContent;
+                product = percentageCalculations(savedNum1, savedNum2);
+                screenDisplay.textContent = product;
+                savedNum1 = product;
+                isPressed = true;
+                calcDone = false;
+            }
+        }
         else if (calcButton.textContent === "=" && calcDone === true) {
             savedNum2 = screenDisplay.textContent;
             product = operate(symbolPressed, savedNum1, savedNum2);
@@ -48,6 +61,7 @@ calcButtons.forEach((calcButton) => {
             calcDone = true;
             isPressed = true;
         }
+        dotButtonPressed = false; 
     })
 })
 
@@ -57,16 +71,18 @@ const padButtons = document.querySelectorAll(".num");
 
 padButtons.forEach((padButton) => {
     padButton.addEventListener("click", () => {
-        
         if (isPressed === true) {
             clearScreen();
             enteredNum = "";
             isPressed = false;
         }
-        if (padButton.textContent === ".") {
-            dotButtonPressed = true; 
-        }
         
+            
+        // if (padButton.textContent === ".") {
+        //     dotButtonPressed = true;
+        //     const toggleDot = document.querySelector("#dot");
+        //     toggleDot.classList.remove("dot");
+        // }
         enteredNum += padButton.textContent;
         if (minusActivated === true) {
             screenDisplay.textContent = enteredNum * -1;
@@ -88,14 +104,12 @@ clearButton.addEventListener("click", () => {
 const toggleNegative = document.querySelector("#toggle-negative");
 
 toggleNegative.addEventListener("click", () => {
-    if (screenDisplay.textContent > 0) {
-        screenDisplay.textContent = screenDisplay.textContent * -1;
-    }
+    screenDisplay.textContent = screenDisplay.textContent * -1;
 });
 
 
-function operate(operator, num1, num2) {
 
+function operate(operator, num1, num2) {
     if (operator === "+") {
         let sum = add(num1, num2);
         return +sum.toFixed(15);
@@ -130,6 +144,25 @@ function divide(num1, num2) {
     return parseFloat(num1) / parseFloat(num2);
 }
 
+function percentageCalculations(num1, num2) {
+    if (symbolPressed === "/") {
+        let sum = parseFloat(num1) / parseFloat(num2) * 100;
+        return +sum.toFixed(15);
+    }
+    else if (symbolPressed === "*") {
+        let sum = parseFloat(num1) * parseFloat(num2) / 100;
+        return +sum.toFixed(15);
+    }
+    else if (symbolPressed === "+") {
+        let sum = parseFloat(num1) * (1 + (parseFloat(num2) / 100));
+        return +sum.toFixed(15);
+    }
+    else if (symbolPressed === "-") {
+        let sum = parseFloat(num1) - (parseFloat(num1) * (parseFloat(num2) / 100));
+        return +sum.toFixed(15);
+    }
+}
+
 
 function clearScreen() {
     screenDisplay.textContent = "";
@@ -145,30 +178,3 @@ function resetCalc() {
 }
 
 
-
-
-
-/* 
-
-
-if the symbol has been pressed BEFORE a calc button has already been pressed, then just do a simple NUM / 100 calculation. 
-
-
-
-if calcDone === false, then the symbol has been pressed before a calc button has been pressed,
-        if calcDone === false then the symbol has been pressed after a calc button has been pressed
-
-
-
-
-
-if the symbol has been pressed AFTER a calc button has already been pressed (except "="), then do the percentageCalculations.
-
-
-
-
-*/
-
-function percentageCalculations(num1, num2) {
-
-}
