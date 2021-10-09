@@ -5,7 +5,9 @@ let enteredNum = "";
 let symbolPressed = "";
 
 let isPressed = false;
-let calcDone = false; 
+let calcDone = false;
+let dotButtonPressed = false;
+let minusActivated = false;
 
 let savedNum1;
 let savedNum2;
@@ -17,9 +19,6 @@ const calcButtons = document.querySelectorAll(".calc");
 
 calcButtons.forEach((calcButton) => {
     calcButton.addEventListener("click", () => {
-        if (calcButton.textContent === "AC") { // needs edits as doesnt work properly, need to add % and +/- functionality
-            resetCalc();
-        }
         if (symbolPressed === "/" && screenDisplay.textContent === "0") {
             screenDisplay.textContent = "Not today";
             enteredNum = "";
@@ -58,22 +57,45 @@ const padButtons = document.querySelectorAll(".num");
 
 padButtons.forEach((padButton) => {
     padButton.addEventListener("click", () => {
-        if (screenDisplay.textContent === "Not today") {
-
-        }
+        
         if (isPressed === true) {
             clearScreen();
             enteredNum = "";
             isPressed = false;
         }
+        if (padButton.textContent === ".") {
+            dotButtonPressed = true; 
+        }
         
         enteredNum += padButton.textContent;
-        screenDisplay.textContent = enteredNum;
+        if (minusActivated === true) {
+            screenDisplay.textContent = enteredNum * -1;
+        }
+        else {
+            screenDisplay.textContent = enteredNum;
+        }
     })
 });
 
 
+
+const clearButton = document.querySelector("#clear");
+
+clearButton.addEventListener("click", () => {
+    resetCalc();
+});
+
+const toggleNegative = document.querySelector("#toggle-negative");
+
+toggleNegative.addEventListener("click", () => {
+    if (screenDisplay.textContent > 0) {
+        screenDisplay.textContent = screenDisplay.textContent * -1;
+    }
+});
+
+
 function operate(operator, num1, num2) {
+
     if (operator === "+") {
         let sum = add(num1, num2);
         return +sum.toFixed(15);
@@ -119,4 +141,34 @@ function resetCalc() {
     symbolPressed = "";
     isPressed = false;
     calcDone = false;
+    minusActivated = false;
+}
+
+
+
+
+
+/* 
+
+
+if the symbol has been pressed BEFORE a calc button has already been pressed, then just do a simple NUM / 100 calculation. 
+
+
+
+if calcDone === false, then the symbol has been pressed before a calc button has been pressed,
+        if calcDone === false then the symbol has been pressed after a calc button has been pressed
+
+
+
+
+
+if the symbol has been pressed AFTER a calc button has already been pressed (except "="), then do the percentageCalculations.
+
+
+
+
+*/
+
+function percentageCalculations(num1, num2) {
+
 }
