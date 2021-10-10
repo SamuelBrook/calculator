@@ -6,8 +6,8 @@ let symbolPressed = "";
 
 let isPressed = false;
 let calcDone = false;
-let dotButtonPressed = false;
 let minusActivated = false;
+let dotButtonPressed = false;
 
 let savedNum1;
 let savedNum2;
@@ -27,6 +27,7 @@ calcButtons.forEach((calcButton) => {
             calcDone = false;
         }
         else if (calcButton.textContent === "%") {
+            dotButtonPressed = false;
             if (calcDone === false) {
                 screenDisplay.textContent = screenDisplay.textContent / 100;
             }
@@ -46,6 +47,7 @@ calcButtons.forEach((calcButton) => {
             savedNum1 = product;
             isPressed = true;
             calcDone = false;
+            dotButtonPressed = false;
         }
         else if (calcButton.textContent !== "=" && calcDone === true) {
             savedNum2 = screenDisplay.textContent;
@@ -54,14 +56,19 @@ calcButtons.forEach((calcButton) => {
             savedNum1 = product;
             symbolPressed = calcButton.textContent;
             isPressed = true;
+            dotButtonPressed = false;
         }
         else if (calcButton.textContent !== "=") {
             symbolPressed = calcButton.textContent;
             savedNum1 = screenDisplay.textContent;
             calcDone = true;
             isPressed = true;
+            dotButtonPressed = false;
         }
-        dotButtonPressed = false; 
+        if (screenDisplay.textContent.length > 12) {
+            screenDisplay.textContent = screenDisplay.textContent.substring(0, 10);
+        }
+        screenDisplay.textContent = +parseFloat(screenDisplay.textContent);
     })
 })
 
@@ -76,14 +83,18 @@ padButtons.forEach((padButton) => {
             enteredNum = "";
             isPressed = false;
         }
+
+        if (padButton.textContent === "." && dotButtonPressed === true) return;
         
-            
-        // if (padButton.textContent === ".") {
-        //     dotButtonPressed = true;
-        //     const toggleDot = document.querySelector("#dot");
-        //     toggleDot.classList.remove("dot");
-        // }
-        enteredNum += padButton.textContent;
+        else if (padButton.textContent === ".") {
+            dotButtonPressed = true;
+        }
+        if (enteredNum.length < 13) {
+            enteredNum += padButton.textContent;
+        }
+
+        
+
         if (minusActivated === true) {
             screenDisplay.textContent = enteredNum * -1;
         }
@@ -112,19 +123,19 @@ toggleNegative.addEventListener("click", () => {
 function operate(operator, num1, num2) {
     if (operator === "+") {
         let sum = add(num1, num2);
-        return +sum.toFixed(15);
+        return +sum.toFixed(11);
     }
     else if (operator === "-") {
         let sum = subtract(num1, num2);
-        return +sum.toFixed(15);
+        return +sum.toFixed(11);
     }
     else if (operator === "*") {
         let sum = multiply(num1, num2);
-        return +sum.toFixed(15);
+        return +sum.toFixed(11);
     }
     else if (operator === "/") {
         let sum = divide(num1, num2);
-        return +sum.toFixed(15);
+        return +sum.toFixed(11);
     }
 }
  
@@ -147,19 +158,19 @@ function divide(num1, num2) {
 function percentageCalculations(num1, num2) {
     if (symbolPressed === "/") {
         let sum = parseFloat(num1) / parseFloat(num2) * 100;
-        return +sum.toFixed(15);
+        return +sum.toFixed(11);
     }
     else if (symbolPressed === "*") {
         let sum = parseFloat(num1) * parseFloat(num2) / 100;
-        return +sum.toFixed(15);
+        return +sum.toFixed(11);
     }
     else if (symbolPressed === "+") {
         let sum = parseFloat(num1) * (1 + (parseFloat(num2) / 100));
-        return +sum.toFixed(15);
+        return +sum.toFixed(11);
     }
     else if (symbolPressed === "-") {
         let sum = parseFloat(num1) - (parseFloat(num1) * (parseFloat(num2) / 100));
-        return +sum.toFixed(15);
+        return +sum.toFixed(11);
     }
 }
 
@@ -175,6 +186,6 @@ function resetCalc() {
     isPressed = false;
     calcDone = false;
     minusActivated = false;
+    dotButtonPressed = false;
 }
-
 
